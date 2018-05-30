@@ -9,15 +9,24 @@ import java.awt.event.*;
 import java.net.*;
 import java.io.*;
 
+/**
+ * In Anlehnung an das Buch "Swing Hacks":
+ * Man startet die Applikation 2x.
+ * Die zuerst gestartete wird der Server (, da noch kein Socket aufgebaut werden kann, geht die Applikation davon aus, sie muss Server werden.
+ * Die danach gestartete Applikation wird Client (, nun kann der Socket aufgebaut werden). 
+ * @author lindhaueradmin
+ *
+ */
 public class ApplicationMirrorTest {
     Map component_map;
+    boolean bServer = false;
     public ApplicationMirrorTest() {
         component_map = new ComponentMap();
         
         JFrame frame = new JFrame();
         frame.getContentPane().setLayout(new FlowLayout());
         
-        final JButton button = new JButton("action generator");
+        final JButton button = new JButton("Clicke -> übertrage an Server den Click.");
         button.setName("button");
         
         
@@ -25,11 +34,12 @@ public class ApplicationMirrorTest {
         MyActionListerner4Button myListener = new MyActionListerner4Button(this);
         button.addActionListener(myListener);
         
-        //Aber auch so, wird in der Server Applikation nun auch der Button geclickt....
-        
+      //Aber auch auch ohne meinen ActionListener, wird in der Server Applikation auch der Button geclickt....
+        //und auch das Bewegen des Mauszeigers auf den Button erzeugt auf dem Server einen Effekt.
         frame.getContentPane().add(button);
         
-        JTextField tf = new JTextField("text field");
+        //Allerdings wird der Text nicht übertragen.
+        JTextField tf = new JTextField("Text. Wie übertragen?");
         tf.setName("textfield");
         frame.getContentPane().add(tf);
         
@@ -38,7 +48,8 @@ public class ApplicationMirrorTest {
     }
     
     public void openSender(Socket sock) throws Exception {
-    	 System.out.println("socket geöffnet... Dann steht die Ressource des Servers zur Verfügung. Ist also Sender...");
+    	System.out.println("socket geöffnet... Dann steht die Ressource des Servers zur Verfügung. Ist also Sender...");
+    	this.isServer(false);
         final ObjectOutputStream out = new ObjectOutputStream(sock.getOutputStream());
             
         Toolkit.getDefaultToolkit().addAWTEventListener(
@@ -82,6 +93,7 @@ public class ApplicationMirrorTest {
     public void openReceiver() throws Exception  {
         // receive events
         System.out.println("couldn't open socket. must be the server");
+        this.isServer(true);
         ServerSocket server = new ServerSocket(6754);
         Socket sock = server.accept();
         
@@ -109,6 +121,8 @@ public class ApplicationMirrorTest {
                 System.out.print("Eventid = " + me.getID());
                 System.out.println(me.paramString());
                 
+                //Aus dem empfangenen Event wird ein neuer Event gebaut. Dieser wird in den EventQueue gestellt.
+                //Das reicht aus, um den Click auf den Button zu übertragen.
                 MouseEvent me2 = new MouseEvent(
                     (Component)component_map.get(id),
                     me.getID(),
@@ -158,6 +172,13 @@ public class ApplicationMirrorTest {
     
     public Map getComponen_Map(){
     	return this.component_map;
+    }
+
+    private boolean isServer(){
+    	return this.bServer;
+    }
+    private void isServer(boolean bServer){
+    	this.bServer = bServer;
     }
 
 }

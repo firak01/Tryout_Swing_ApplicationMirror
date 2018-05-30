@@ -172,7 +172,7 @@ public class ApplicationMirrorTest {
     	return this.component_map;
     }
     
-    private boolean isSever(){
+    private boolean isServer(){
     	return this.bServer;
     }
     private void isServer(boolean bServer){
