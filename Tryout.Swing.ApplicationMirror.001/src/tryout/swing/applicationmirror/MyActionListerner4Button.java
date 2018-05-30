@@ -13,15 +13,7 @@ public class MyActionListerner4Button implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		System.out.println("ActionPerformed.");
-		
-		MyTextSendEvent myEvent = new MyTextSendEvent((Component)arg0.getSource(), 1, "TTTTT");	
-		
-		
-		//Schleuse diesen "künstlichen" Event nun in die ComponentMap ein....
-		ComponentMap objMapComponent = (ComponentMap) this.getApplication().component_map;
-		//.put(100, myEvent); //Füge das irgendwie dem Stack hinzu.
-		objMapComponent.eventDispatched(myEvent);
+		System.out.println("ActionPerformed.");				
 	}
 	
 	public ApplicationMirrorTest getApplication(){
