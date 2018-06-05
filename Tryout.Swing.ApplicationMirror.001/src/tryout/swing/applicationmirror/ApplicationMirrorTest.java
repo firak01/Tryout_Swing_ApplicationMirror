@@ -56,25 +56,25 @@ public class ApplicationMirrorTest {
                 public void eventDispatched(AWTEvent evt) {
                     try {
                         if(evt instanceof MouseEvent) {
-                            System.out.print("MouseEvent passiert...");
+                            System.out.print("Client: MouseEvent passiert...");
                             MouseEvent me = (MouseEvent)evt;
                             
                             //Versuche etwas sinnvolles mitzugeben.
                             //1. Die Komponente beim Sender im Zugriff....
-                            if(me.getComponent() instanceof JTextField){
-                            	JTextField objText = (JTextField) me.getComponent();
-                            	String stemp = objText.getText();
-                            	System.out.print("Eingegebener Text: " + stemp + "\n");
-                            	//Das klappt nicht out.writeObject("Eingegebener Text:"+stemp);
-                            	//Versuch den Event zu manipulieren.... Wenn das Klappt kann man ggfs. einen eigenen Event "verschicken"
-                            	
-                            	
-                            }
+//                            if(me.getComponent() instanceof JTextField){
+//                            	JTextField objText = (JTextField) me.getComponent();
+//                            	String stemp = objText.getText();
+//                            	System.out.print("Client: Eingegebener Text: " + stemp + "\n");
+//                            	//Das klappt nicht out.writeObject("Eingegebener Text:"+stemp);
+//                            	//Versuch den Event zu manipulieren.... Wenn das Klappt kann man ggfs. einen eigenen Event "verschicken"
+//                            	
+//                            	
+//                            }
                             
                             out.writeObject(me.getComponent().getName());                            
                             out.writeObject(evt);
                         }else{
-                        	System.out.println("ANDERER EVENT\n");
+                        	System.out.println("Client: ANDERER EVENT\n");
                         	System.out.println(evt.getClass().getName());
 
                         	//bisher ist hier noch kein anderer Event angekommen.
@@ -97,13 +97,13 @@ public class ApplicationMirrorTest {
         EventQueue eq = Toolkit.getDefaultToolkit().getSystemEventQueue();
         
         ObjectInputStream in = new ObjectInputStream(sock.getInputStream());
-        while(true ) {
+        while(true) {
             String id = (String) in.readObject();
-            System.out.println("openReceiver() . Lese id="+id);
+            System.out.println("Server: openReceiver() . Lese id="+id);
             
             AWTEvent evt = (AWTEvent) in.readObject();
             if(evt instanceof MouseEvent) {
-            	System.out.println("Mouse Event empfangen .... ");
+            	System.out.println("Server: Mouse Event empfangen .... ");
                 MouseEvent me = (MouseEvent)evt;
                 
                 
@@ -115,7 +115,7 @@ public class ApplicationMirrorTest {
 //                	System.out.print("Text: " + stemp);
 //                }
                 
-                System.out.print("Eventid = " + me.getID());
+                System.out.print("Server: Eventid = " + me.getID());
                 System.out.println(me.paramString());
                 
                 //Aus dem empfangenen Event wird ein neuer Event gebaut. Dieser wird in den EventQueue gestellt.
@@ -134,7 +134,7 @@ public class ApplicationMirrorTest {
                 eq.postEvent(me2);
             }else{
             	//BAUE DEN EMPFANGSTEIL FÜR ANDERE EVENTS, DIE ICH KÜNSTLICH HINZUGEFÜGT HABE...
-            	System.out.println("ANDEREN EVENT empfangen .... ");
+            	System.out.println("Server: ANDEREN EVENT empfangen .... ");
             	System.out.println(evt.getClass().getName());
             	
             	//bisher ist hier noch kein anderer Event angekommen.
