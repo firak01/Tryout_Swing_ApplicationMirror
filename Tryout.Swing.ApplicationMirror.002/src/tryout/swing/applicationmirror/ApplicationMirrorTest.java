@@ -16,6 +16,12 @@ import java.io.*;
  * Die danach gestartete Applikation wird Client (, nun kann der Socket aufgebaut werden). 
  * @author lindhaueradmin
  *
+ *  TODO 20180606: Schicker machen
+ *  a) Server als Server erkennbar 
+ *      D.h. nur ein gemeinsames Panel, dann ein Label, dass mit dem Inhalt gefüllt wird (je nach dem Wert von isServer())
+ *      
+ *  b) Toll wäre, wenn jeder getippte Buchstabe auch auf dem Server erscheinen würde, ohne dass extra der Button geclickt werden muss.
+ *
  */
 public class ApplicationMirrorTest {
     Map component_map;
@@ -202,10 +208,16 @@ public class ApplicationMirrorTest {
 	                MyMessage objMessage = (MyMessage) obj;
 	                if(objMessage!=null){
 	                	 System.out.println("Server: Aus MyMessage empfangener STRING = " + objMessage.getMessage());
-	                	 
+	                	 String sNameAffected = objMessage.getComponentNameAffected();
+	                	 System.out.println("Server: Aus MyMessage empfangene NameAffected= " + sNameAffected);
 	                	 //TODO: Aus der objComponent nun das JTextfield Objekt holen.
 	                	 //      Dazu muss die ID in der MyMessage enthalten sein.
 	                	 //      Dann kann man den Text in das JTextfield Objekt setzen.
+	                	 Component c = readComponentFromMapByName(sNameAffected);
+	                	 if(c instanceof JTextField){
+	                		 JTextField field = (JTextField) c;
+	                		 field.setText(objMessage.getMessage());
+	                	 }
 	                }
                 }
             	
@@ -245,7 +257,7 @@ public class ApplicationMirrorTest {
     	return this.component_map;
     }
 
-    private boolean isServer(){
+    public boolean isServer(){
     	return this.bServer;
     }
     private void isServer(boolean bServer){
@@ -297,5 +309,40 @@ public class ApplicationMirrorTest {
     	System.out.println("Client: Trying - Create SocketForClient.");
     	final Socket sock = new Socket(this.getServerUrl(),this.getServerSocketPort());
     	return sock;
+    }
+    
+    /* Versuche aus der Component Map eine Komponente  auszulesen. */
+    public Component readComponentFromMapById(String sId){
+    	Component objReturn = null;
+    	System.out.println("readComponentFromMapById: sId=" + sId);
+    	
+    	Map<String, Component> mapComponent = this.getComponen_Map();
+    	Set<String> setComponentKey = mapComponent.keySet();
+    
+    	for(String sComponentKey : setComponentKey){
+    		System.out.println("readComponentFromMapById: " + sComponentKey);
+    		
+    	}
+    	return objReturn;
+    }
+    
+    /* Versuche aus der Component Map eine Komponente  auszulesen. */
+    public Component readComponentFromMapByName(String sName){
+    	Component objReturn = null;
+    	System.out.println("readComponentFromMapByName: sName=" + sName);
+    	main:{
+    		if(sName==null) break main;
+	    	Map<String, Component> mapComponent = this.getComponen_Map();
+	    	Set<String> setComponentKey = mapComponent.keySet();
+	    
+	    	for(String sComponentKey : setComponentKey){
+	    		System.out.println("readComponentFromMapByName: " + sComponentKey);
+	    		if(sName.equals(sComponentKey)){
+	    			objReturn = mapComponent.get(sComponentKey);
+	    			break;
+	    		}
+	    	}
+    	}//end main:
+    	return objReturn;
     }
 }

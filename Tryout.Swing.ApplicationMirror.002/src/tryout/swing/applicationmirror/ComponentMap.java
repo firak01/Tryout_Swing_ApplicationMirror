@@ -26,7 +26,7 @@ public class ComponentMap extends HashMap implements AWTEventListener {
                         );
             }else{
             
-            ComponentEvent ce = (ComponentEvent)evt;            
+            ComponentEvent ce = (ComponentEvent)evt;              
             System.out.println("storing component: " + ce.getComponent().getName());
             this.put(
                 ce.getComponent().getName(),
